@@ -9,15 +9,18 @@
 const fs = require('fs');
 const path = require('path');
 
-const apiUrl = (process.env.API_URL || '').replace(/\/+$/, ''); // strip trailing slash
+const apiUrl = process.env.API_URL;
+
+if (!apiUrl) {
+  console.log('[replace-api-url] API_URL not set — keeping value from environment.production.ts');
+  process.exit(0);
+}
+
+const cleanUrl = apiUrl.replace(/\/+$/, '');
 const file = path.join(__dirname, 'src', 'environments', 'environment.production.ts');
 
 let content = fs.readFileSync(file, 'utf8');
-content = content.replace(/apiUrl:\s*'[^']*'/, `apiUrl: '${apiUrl}'`);
+content = content.replace(/apiUrl:\s*'[^']*'/, `apiUrl: '${cleanUrl}'`);
 fs.writeFileSync(file, content, 'utf8');
 
-if (apiUrl) {
-  console.log(`[replace-api-url] apiUrl set to "${apiUrl}"`);
-} else {
-  console.log('[replace-api-url] API_URL not set — using relative URLs (nginx proxy mode)');
-}
+console.log(`[replace-api-url] apiUrl set to "${cleanUrl}"`);
