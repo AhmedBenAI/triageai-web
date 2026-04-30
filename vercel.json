@@ -1,0 +1,6 @@
+{
+  "outputDirectory": "dist/triageai-frontend/browser",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
